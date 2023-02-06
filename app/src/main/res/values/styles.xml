@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ToolbarTitleStyleParent">
+        <item name="android:fontFamily"></item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:shadowDx">0.5</item>
+        <item name="android:shadowDy">0.5</item>
+        <item name="android:shadowRadius">0.5</item>
+        <item name="android:shadowColor">#ffffff</item>
+    </style>
+
+    <style name="CollapsingTitleStyle"  parent="ToolbarTitleStyleParent">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="ExpandedTitleStyle" parent="ToolbarTitleStyleParent">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+</resources>

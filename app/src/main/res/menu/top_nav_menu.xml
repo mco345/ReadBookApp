@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search_white"
+        app:showAsAction="always"
+        android:title="찾기"/>
+
+    <item
+        android:id="@+id/myPage"
+        android:icon="@drawable/ic_person"
+        app:showAsAction="always"
+        android:title="내 페이지"/>
+
+
+
+</menu>
