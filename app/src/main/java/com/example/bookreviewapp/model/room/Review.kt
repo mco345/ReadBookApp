@@ -6,7 +6,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Review(
-    @PrimaryKey val id: Long?,
-    @ColumnInfo(name = "review") val review: String?
+    @PrimaryKey val currentDate: Long?,
+    @ColumnInfo(name = "id") val id: Long?,
+    @ColumnInfo(name = "review") val review: String?,
+    @ColumnInfo(name = "page") val page: String?
 
 )

@@ -75,7 +75,7 @@ class SearchActivity : AppCompatActivity() {
     private fun initBookRecyclerView(){
         adapter = BookAdapter(itemClickedListener = {
             val intent = Intent(this, DetailActivity::class.java)
-            intent.putExtra("selectedBookISBN", it.isbn13)
+            intent.putExtra("selectedBookISBN", if(it.isbn13 != "") it.isbn13 else it.isbn10)
             startActivity(intent)
         })
 

@@ -16,7 +16,7 @@ interface LikeDao {
     @Query("DELETE FROM `like` WHERE id == :id")
     fun deleteLike(id: Long)
 
-    @Query("SELECT * FROM `like` WHERE isLike == 1")
+    @Query("SELECT * FROM `like` WHERE isLike == 1 ORDER BY likeCurrentDate DESC")
     fun getAllLikeList(): List<Like>
 
 

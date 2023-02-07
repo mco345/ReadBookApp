@@ -15,7 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
@@ -33,10 +32,14 @@
                 android:id="@+id/likeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.36"
                 app:srb_clearRatingEnabled="true"
                 app:srb_clickable="true"
+                app:srb_drawableEmpty="@drawable/ic_heart_border"
+                app:srb_drawableFilled="@drawable/ic_heart"
                 app:srb_isIndicator="false"
                 app:srb_minimumStars="0"
                 app:srb_numStars="1"
@@ -45,11 +48,7 @@
                 app:srb_starHeight="30dp"
                 app:srb_starPadding="10dp"
                 app:srb_starWidth="30dp"
-                app:srb_stepSize="1"
-                app:srb_drawableEmpty="@drawable/ic_heart_border"
-                app:srb_drawableFilled="@drawable/ic_heart"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:srb_stepSize="1" />
 
 
             <ImageView
@@ -71,8 +70,8 @@
                 android:autoSizeMaxTextSize="20sp"
                 android:autoSizeTextType="uniform"
                 android:gravity="center"
-                android:textStyle="bold"
                 android:textColor="@color/black"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/coverImageView"
@@ -121,7 +120,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ratingBar" />
-
 
 
             <TextView
@@ -266,8 +264,83 @@
                 app:layout_constraintTop_toBottomOf="@id/pubDateTextView" />
 
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/extendedFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/orange"
+        android:text="닫기"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:icon="@drawable/ic_plus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addMemoFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/orange"
+        android:onClick="addMemo"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/extendedFAB"
+        app:layout_constraintEnd_toEndOf="@+id/extendedFAB"
+        app:srcCompat="@drawable/ic_plus" />
+
+    <TextView
+        android:id="@+id/addMemoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/background_radius_orange"
+        android:elevation="5dp"
+        android:onClick="addMemo"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:text="메모 추가하기"
+        android:textColor="@color/white"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/addMemoFAB"
+        app:layout_constraintEnd_toStartOf="@+id/addMemoFAB"
+        app:layout_constraintTop_toTopOf="@+id/addMemoFAB" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/startReadingFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/orange"
+        android:onClick="startReading"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/addMemoFAB"
+        app:layout_constraintEnd_toEndOf="@+id/addMemoFAB"
+        app:layout_constraintStart_toStartOf="@+id/addMemoFAB"
+        app:srcCompat="@drawable/ic_book" />
+
+    <TextView
+        android:id="@+id/startReadingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/background_radius_orange"
+        android:elevation="5dp"
+        android:onClick="startReading"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:text="독서 시작하기"
+        android:textColor="@color/white"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/startReadingFAB"
+        app:layout_constraintEnd_toStartOf="@+id/startReadingFAB"
+        app:layout_constraintTop_toTopOf="@+id/startReadingFAB" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@ data class Book (
     @SerializedName("cover") val coverSmallUrl: String,
     @SerializedName("author") val author: String,
     @SerializedName("publisher") val publisher: String,
+    @SerializedName("isbn") val isbn10: String,
     @SerializedName("isbn13") val isbn13: String,
     @SerializedName("pubDate") val pubDate: String,
     @SerializedName("link") val link: String,

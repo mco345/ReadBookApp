@@ -26,7 +26,7 @@ class BookAdapter(val itemClickedListener: (Book) -> Unit): ListAdapter<Book, Bo
             binding.titleTextView.text = bookModel.title
             // 설명
             binding.descriptionTextView.text = bookModel.description
-            // 책사진
+            // 표지 사진
             Glide
                 .with(binding.coverImageView.context)
                 .load(bookModel.coverSmallUrl)

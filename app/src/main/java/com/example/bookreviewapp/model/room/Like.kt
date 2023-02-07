@@ -12,5 +12,6 @@ data class Like(
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "coverUrl") val coverUrl: String,
     @ColumnInfo(name = "author") val author: String,
-    @ColumnInfo(name = "description") val description: String
+    @ColumnInfo(name = "description") val description: String,
+    @ColumnInfo(name = "likeCurrentDate") val likeCurrentDate: Long
 )

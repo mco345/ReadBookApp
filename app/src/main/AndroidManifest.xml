@@ -12,7 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BookReviewApp"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MyPageActivity"></activity>
+        <activity android:name=".WriteMemoActivity"></activity>
+        <activity android:name=".MemoActivity" />
+        <activity android:name=".MyPageActivity" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".DetailActivity" />
         <activity
