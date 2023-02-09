@@ -88,6 +88,21 @@
                 app:layout_constraintTop_toBottomOf="@id/titleTextView"
                 tools:text="작가" />
 
+            <TextView
+                android:id="@+id/isReadTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_radius_20_stroke_orange"
+                android:padding="8dp"
+                android:text="독서 시작하기"
+                android:onClick="startReading"
+                android:textStyle="bold"
+                android:textColor="@color/orange"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/authorTextView" />
+
             <com.willy.ratingbar.ScaleRatingBar
                 android:id="@+id/ratingBar"
                 android:layout_width="wrap_content"
@@ -96,7 +111,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/authorTextView"
+                app:layout_constraintTop_toBottomOf="@id/isReadTextView"
                 app:layout_constraintVertical_bias="0.36"
                 app:srb_clearRatingEnabled="true"
                 app:srb_clickable="true"
@@ -318,7 +333,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:backgroundTint="@color/orange"
-        android:onClick="startReading"
+        android:onClick="startTimer"
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@+id/addMemoFAB"
         app:layout_constraintEnd_toEndOf="@+id/addMemoFAB"
@@ -332,10 +347,10 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/background_radius_orange"
         android:elevation="5dp"
-        android:onClick="startReading"
+        android:onClick="startTimer"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
-        android:text="독서 시작하기"
+        android:text="독서 타이머 시작하기"
         android:textColor="@color/white"
         android:textSize="12dp"
         android:textStyle="bold"
