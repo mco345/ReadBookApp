@@ -33,12 +33,6 @@ class MyPageActivity : AppCompatActivity() {
             AppDatabase::class.java,
             "BookSearchDB"
         ).build()
-
-
-//        Thread{
-//            val likeList:List<Like> = db.likeDao().getAllLikeList()
-//            Log.d(TAG, "찜 목록 : $likeList")
-//        }.start()
     }
 
     private fun initViewPager() {
@@ -62,7 +56,6 @@ class MyPageActivity : AppCompatActivity() {
 
         //ViewPager, TabLayout 연결
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            Log.e("YMC", "ViewPager position: ${position}")
             when (position) {
                 0 -> tab.text = "내가 읽는 중인 책"
                 1 -> tab.text = "내가 읽은 책"

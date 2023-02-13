@@ -13,7 +13,8 @@
         android:background="@android:color/transparent"
         android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:onClick="backButtonClicked"/>
 
     <ScrollView
         android:id="@+id/scrollView"

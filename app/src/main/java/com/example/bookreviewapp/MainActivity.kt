@@ -26,6 +26,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
 
+    override fun onResume() {
+        super.onResume()
+
+        binding.bestSellerRecyclerView.adapter = adapter
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -52,30 +58,35 @@ class MainActivity : AppCompatActivity() {
 
         bookService = retrofit.create(BookService::class.java)
 
+        setData()
+
+    }
+
+    private fun setData(){
+
         bookService.getBestSellerBooks(getString(R.string.APIKey))
-                .enqueue(object: Callback<BestSellerDto>{
-                    override fun onResponse(call: Call<BestSellerDto>, response: Response<BestSellerDto>) {
-                        // todo 성공처리
+            .enqueue(object: Callback<BestSellerDto>{
+                override fun onResponse(call: Call<BestSellerDto>, response: Response<BestSellerDto>) {
+                    // todo 성공처리
 
-                        if(response.isSuccessful.not()){
-                            Log.e(TAG, "NOT!! SUCCESS")
-                            return
-                        }
-
-                        Log.d(TAG, "결과 : ${response.body()?.books}")
-
-                        response.body()?.let{
-                            adapter.submitList(it.books)
-                        }
+                    if(response.isSuccessful.not()){
+                        Log.e(TAG, "NOT!! SUCCESS")
+                        return
                     }
 
-                    override fun onFailure(call: Call<BestSellerDto>, t: Throwable) {
-                        // todo 실패처리
-                        Log.e(TAG, t.toString())
+                    Log.d(TAG, "결과 : ${response.body()?.books}")
+
+                    response.body()?.let{
+                        adapter.submitList(it.books)
                     }
+                }
 
-                })
+                override fun onFailure(call: Call<BestSellerDto>, t: Throwable) {
+                    // todo 실패처리
+                    Log.e(TAG, t.toString())
+                }
 
+            })
     }
 
     private fun initBookRecyclerView(){

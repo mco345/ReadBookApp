@@ -1,22 +1,53 @@
 package com.example.bookreviewapp.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.bookreviewapp.AppDatabase
+import com.example.bookreviewapp.R
 import com.example.bookreviewapp.databinding.ItemBookBinding
 import com.example.bookreviewapp.model.restful.Book
 import com.example.bookreviewapp.model.room.Like
 
 class LikeBookAdapter(val itemClickedListener: (Like) -> Unit) :
     ListAdapter<Like, LikeBookAdapter.LikeBookViewHolder>(diffUtil) {
+    lateinit var state: String
+
     inner class LikeBookViewHolder(private val binding: ItemBookBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(likeModel: Like) {
+            // 상태
+            val db = Room.databaseBuilder(
+                binding.root.context,
+                AppDatabase::class.java,
+                "BookSearchDB"
+            ).build()
+
+            Thread{
+                state = db.readingDao().getState(likeModel.id!!.toLong()).orEmpty()
+                Log.d(TAG, "state : $state")
+                binding.root.post {
+                    when(state){
+                        "isReading" -> {
+                            binding.stateImageView.isVisible = true
+                            binding.stateImageView.setImageResource(R.drawable.shape_oval_orange)
+                        }
+                        "finishReading" -> {
+                            binding.stateImageView.isVisible = true
+                            binding.stateImageView.setImageResource(R.drawable.shape_oval_violet)
+                        }
+                    }
+                }
+
+            }.start()
             // 제목
             binding.titleTextView.text = likeModel.title
             // 설명
@@ -59,5 +90,7 @@ class LikeBookAdapter(val itemClickedListener: (Like) -> Unit) :
             }
 
         }
+
+        private const val TAG = "LikeBookAdapter"
     }
 }

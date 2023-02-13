@@ -2,6 +2,7 @@ package com.example.bookreviewapp
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -13,6 +14,7 @@ import android.view.View
 import android.view.Window
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -302,6 +304,7 @@ class DetailActivity : AppCompatActivity() {
         when(thisBookState){
             "noRead" -> dialog.setContentView(R.layout.dialog_start_reading)
             "isReading" -> dialog.setContentView(R.layout.dialog_reading)
+            "finishReading" -> dialog.setContentView(R.layout.dialog_finish_reading)
         }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
@@ -312,6 +315,7 @@ class DetailActivity : AppCompatActivity() {
         when(thisBookState){
             "noRead" -> startReadingDialog(dialog)
             "isReading" -> isReadingDialog(dialog)
+            "finishReading" -> finishReadingDialog(dialog)
         }
     }
 
@@ -622,11 +626,46 @@ class DetailActivity : AppCompatActivity() {
 
             renewActivity()
 
-
             dialog.dismiss()
-
-
         }
+    }
+
+    private fun finishReadingDialog(dialog: BottomSheetDialog) {
+        val resetButton: ImageButton = dialog.findViewById(R.id.resetButton)!!
+        val startDateTextView: TextView = dialog.findViewById(R.id.startDateTextView)!!
+        val targetDateTextView: TextView = dialog.findViewById(R.id.targetDateTextView)!!
+        val finishDateTextView: TextView = dialog.findViewById(R.id.finishDateTextView)!!
+        val timerTextView: TextView = dialog.findViewById(R.id.timerTextView)!!
+
+        // 리셋 버튼
+        resetButton.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("초기화")
+                .setMessage("초기화하시면 독서 정보가 모두 삭제됩니다. 정말 초기화하시겠습니까?")
+                .setPositiveButton("확인",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        Thread{
+                            db.readingDao().delete(isbn.toLong())
+                        }.start()
+                        renewActivity()
+                    })
+                .setNegativeButton("취소", null)
+            // 다이얼로그를 띄워주기
+            builder.show()
+        }
+
+        Thread{
+            val thisBookReading = db.readingDao().getAllFromId(isbn.toLong())
+            val startDate = thisBookReading.startDate
+            val targetDate = thisBookReading.targetDate
+            val finishDate = SimpleDateFormat("yyyy-MM-dd", Locale("ko", "KR")).format(Date(thisBookReading.finishTime!!))
+            runOnUiThread {
+                startDateTextView.text = startDate
+                targetDateTextView.text = targetDate
+                finishDateTextView.text = finishDate
+            }
+        }.start()
+
     }
 
     fun startTimer(view: View) {
@@ -642,6 +681,10 @@ class DetailActivity : AppCompatActivity() {
         intent.putExtra("selectedBookISBN", isbn)
         startActivity(intent) //액티비티 열기
         overridePendingTransition(0, 0) //인텐트 효과 없애기
+    }
+
+    fun backButtonClicked(view: View) {
+        finish()
     }
 
 

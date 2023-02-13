@@ -1,14 +1,20 @@
 package com.example.bookreviewapp.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.RoundedCorner
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.bookreviewapp.AppDatabase
+import com.example.bookreviewapp.MainActivity
+import com.example.bookreviewapp.R
 import com.example.bookreviewapp.databinding.ItemBookBinding
 import com.example.bookreviewapp.model.restful.Book
 
@@ -20,8 +26,46 @@ RecyclerView.Adapter.NotifiyDataSetChanged()와 같은 명령어를 사용하지
 class BookAdapter(val itemClickedListener: (Book) -> Unit): ListAdapter<Book, BookAdapter.BookItemViewHolder>(diffUtil) {
 
     inner class BookItemViewHolder(private val binding: ItemBookBinding): RecyclerView.ViewHolder(binding.root){
+        lateinit var state: String
+        var isLike: Boolean = false
 
         fun bind(bookModel: Book){
+            // 상태, 찜
+            val db = Room.databaseBuilder(
+                binding.root.context,
+                AppDatabase::class.java,
+                "BookSearchDB"
+            ).build()
+
+            Thread{
+                state = db.readingDao().getState(bookModel.isbn13.toLong()).orEmpty()
+                Log.d(TAG, "state : $state")
+
+                isLike = db.likeDao().getIsLike(bookModel.isbn13.toLong()) ?: false
+                Log.d(TAG, "isLike : $isLike")
+
+                binding.root.post {
+                    when(state){
+                        "isReading" -> {
+                            binding.stateImageView.isVisible = true
+                            binding.stateImageView.setImageResource(R.drawable.shape_oval_orange)
+                        }
+                        "finishReading" -> {
+                            binding.stateImageView.isVisible = true
+                            binding.stateImageView.setImageResource(R.drawable.shape_oval_violet)
+                        }
+                    }
+
+                    if(isLike){
+                        binding.likeImageView.isVisible = true
+                    }
+                }
+
+
+            }.start()
+
+
+
             // 제목
             binding.titleTextView.text = bookModel.title
             // 설명
@@ -47,6 +91,10 @@ class BookAdapter(val itemClickedListener: (Book) -> Unit): ListAdapter<Book, Bo
     // 미리 만들어진 ViewHolder가 없을 경우 새로 생성
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookItemViewHolder {
         return BookItemViewHolder(ItemBookBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+
+
+
+
     }
 
     // ViewHolder가 View에 그려졌을 때 data binding
@@ -67,5 +115,7 @@ class BookAdapter(val itemClickedListener: (Book) -> Unit): ListAdapter<Book, Bo
             }
 
         }
+
+        private const val TAG = "BookAdapter"
     }
 }

@@ -20,14 +20,35 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:id="@+id/stateImageView"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/shape_oval_orange"/>
+
+        <ImageView
             android:id="@+id/coverImageView"
             android:layout_width="70dp"
             android:layout_height="90dp"
+            android:layout_marginStart="5dp"
             android:elevation="5dp"
             android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/stateImageView"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/likeImageView"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/coverImageView"
+            app:layout_constraintTop_toTopOf="@id/coverImageView"
+            android:elevation="5dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/ic_heart"/>
 
         <TextView
             android:id="@+id/titleTextView"
@@ -42,6 +63,8 @@
             app:layout_constraintStart_toEndOf="@+id/coverImageView"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="안드로이드 마스터하기" />
+
+
 
         <TextView
             android:id="@+id/descriptionTextView"
