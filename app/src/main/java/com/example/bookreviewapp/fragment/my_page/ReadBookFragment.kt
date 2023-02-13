@@ -62,9 +62,6 @@ class ReadBookFragment : Fragment() {
         initBookRecyclerView()
         loadReadingList()
 
-
-
-
         return binding.root
 
 
@@ -84,22 +81,18 @@ class ReadBookFragment : Fragment() {
     }
 
     private fun loadReadingList() {
-        Thread{
-            readingList = db.readingDao().getAll().orEmpty()
-            context.runOnUiThread{
+        Thread {
+            readingList = db.readingDao().getAll("isReading").orEmpty()
+            context.runOnUiThread {
                 setReadingList()
             }
         }.start()
     }
 
-    private fun setReadingList(){
+    private fun setReadingList() {
         adapter.submitList(readingList)
 
     }
-
-
-
-
 
     companion object {
         private const val TAG = "ReadBookFragment"

@@ -26,6 +26,10 @@ class BookAdapter(val itemClickedListener: (Book) -> Unit): ListAdapter<Book, Bo
             binding.titleTextView.text = bookModel.title
             // 설명
             binding.descriptionTextView.text = bookModel.description
+                                                            .replace("&lt;", "<")
+                                                            .replace("&gt;", ">")
+                                                            .replace("&amp;", "&")
+                                                            .replace("&quot;", "\"")
             // 표지 사진
             Glide
                 .with(binding.coverImageView.context)

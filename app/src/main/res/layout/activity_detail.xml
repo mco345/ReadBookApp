@@ -307,7 +307,7 @@
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@+id/extendedFAB"
         app:layout_constraintEnd_toEndOf="@+id/extendedFAB"
-        app:srcCompat="@drawable/ic_plus" />
+        app:srcCompat="@drawable/ic_note" />
 
     <TextView
         android:id="@+id/addMemoText"
@@ -319,7 +319,7 @@
         android:onClick="addMemo"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
-        android:text="메모 추가하기"
+        android:text="메모하기"
         android:textColor="@color/white"
         android:textSize="12dp"
         android:textStyle="bold"

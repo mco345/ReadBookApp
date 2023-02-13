@@ -1,5 +1,7 @@
 package com.example.bookreviewapp.adapter
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -9,20 +11,45 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.bookreviewapp.databinding.ItemBookBinding
+import com.example.bookreviewapp.databinding.ItemBookReadingBinding
 import com.example.bookreviewapp.model.restful.Book
 import com.example.bookreviewapp.model.room.Like
 import com.example.bookreviewapp.model.room.Reading
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ReadBookAdapter(val itemClickedListener: (Reading) -> Unit) :
     ListAdapter<Reading, ReadBookAdapter.ReadBookViewHolder>(diffUtil) {
 
-    inner class ReadBookViewHolder(private val binding: ItemBookBinding) :
+    inner class ReadBookViewHolder(private val binding: ItemBookReadingBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("SetTextI18n")
         fun bind(readingModel: Reading) {
             // 제목
             binding.titleTextView.text = readingModel.title
-            // 설명
-            binding.descriptionTextView.text = readingModel.description
+            // 독서 퍼센트 & 독서 날짜
+            when(readingModel.state){
+                "isReading" -> {
+                    // 독서 퍼센트
+                    val percent = (readingModel.readingPage!!.toFloat() / readingModel.totalPage!!.toFloat()) * 100
+                    Log.d(TAG, "percent : $percent, ${readingModel.readingPage}, ${readingModel.totalPage} ")
+                    binding.percentReadingTextView.text = "${percent.toInt()}%"
+                    // 시작 날짜
+                    binding.startDateTextView.text = "독서 시작 날짜 : ${readingModel.startDate}"
+                    // 목표 날짜
+                    binding.targetDateTextView.text = "독서 목표 날짜 : ${readingModel.targetDate}"
+                }
+                "finishReading" -> {
+                    // 시작 날짜
+                    binding.startDateTextView.text = "독서 시작 날짜 : ${readingModel.startDate}"
+                    // 완독 날짜
+                    val finishDate = SimpleDateFormat("yyyy-MM-dd", Locale("ko", "KR")).format(Date(readingModel.finishTime!!))
+                    Log.d(TAG, "finishDate : $finishDate")
+                    binding.targetDateTextView.text = "완독 날짜 : $finishDate"
+
+                }
+            }
+
             // 표지 사진
             Glide
                 .with(binding.coverImageView.context)
@@ -42,7 +69,7 @@ class ReadBookAdapter(val itemClickedListener: (Reading) -> Unit) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReadBookViewHolder {
         return ReadBookViewHolder(
-            ItemBookBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemBookReadingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -62,6 +89,8 @@ class ReadBookAdapter(val itemClickedListener: (Reading) -> Unit) :
             }
 
         }
+
+        val TAG = "ReadBookAdapter"
     }
 
 }

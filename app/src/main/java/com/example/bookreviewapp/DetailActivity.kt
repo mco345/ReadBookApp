@@ -2,12 +2,12 @@ package com.example.bookreviewapp
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
-import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.view.Window
@@ -27,14 +27,12 @@ import com.example.bookreviewapp.model.restful.SelectedBookDto
 import com.example.bookreviewapp.model.room.Like
 import com.example.bookreviewapp.model.room.Rating
 import com.example.bookreviewapp.model.room.Reading
-import com.google.gson.internal.bind.util.ISO8601Utils.format
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.String.format
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -142,7 +140,13 @@ class DetailActivity : AppCompatActivity() {
                     binding.titleTextView.text = item?.title.orEmpty()
                     binding.authorTextView.text = item?.author.orEmpty()
                     binding.descriptionTextView.text =
-                        if (item?.description != "") item?.description.orEmpty() else "x"
+                        if (item?.description != "")
+                            item?.description.orEmpty()
+                            .replace("&lt;", "<")
+                            .replace("&gt;", ">")
+                            .replace("&amp;", "&")
+                            .replace("&quot;", "\"")
+                        else "x"
                     binding.publisherTextView.text = item?.publisher.orEmpty()
                     binding.ISBNTextView.text =
                         if (item?.isbn13 != "") item?.isbn13.orEmpty() else item?.isbn10.orEmpty()
@@ -166,13 +170,42 @@ class DetailActivity : AppCompatActivity() {
     private fun setIsRead(){
         // 읽는 중인 책인지 아닌지
         Thread{
-            thisBookState = if(db.readingDao().getState(isbn.toLong()) == null) thisBookState else db.readingDao().getState(isbn.toLong())
+            thisBookState = if(db.readingDao().getAllFromId(isbn.toLong())?.state == null) thisBookState else db.readingDao().getAllFromId(
+                isbn.toLong()
+            )?.state.toString()
             Log.d(TAG, "state : $thisBookState")
-            if(thisBookState == "isReading"){
-                runOnUiThread {
-                    binding.isReadTextView.text = "읽는 중"
-                    binding.isReadTextView.setTextColor(ContextCompat.getColor(this, R.color.white))
-                    binding.isReadTextView.setBackgroundResource(R.drawable.background_radius_orange)
+            runOnUiThread {
+                when(thisBookState){
+                    "noRead" -> {
+                        binding.isReadTextView.text = "독서 시작하기"
+                        binding.isReadTextView.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.orange
+                            )
+                        )
+                        binding.isReadTextView.setBackgroundResource(R.drawable.background_radius_20_stroke_orange)
+                    }
+                    "isReading" -> {
+                        binding.isReadTextView.text = "읽는 중"
+                        binding.isReadTextView.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.white
+                            )
+                        )
+                        binding.isReadTextView.setBackgroundResource(R.drawable.background_radius_orange)
+                    }
+                    "finishReading" -> {
+                        binding.isReadTextView.text = "완독함"
+                        binding.isReadTextView.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.white
+                            )
+                        )
+                        binding.isReadTextView.setBackgroundResource(R.drawable.background_radius_violet)
+                    }
                 }
             }
         }.start()
@@ -256,35 +289,44 @@ class DetailActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun startReading(view: View) {
-        val startReadingDialog = Dialog(this)
+        val startReadingDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
 
         initReadingDialog(startReadingDialog)
         saveReadingDialog(startReadingDialog)
 
-
-
     }
 
-    private fun initReadingDialog(dialog: Dialog){
+    private fun initReadingDialog(dialog: BottomSheetDialog){
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_start_reading)
+        when(thisBookState){
+            "noRead" -> dialog.setContentView(R.layout.dialog_start_reading)
+            "isReading" -> dialog.setContentView(R.layout.dialog_reading)
+        }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }
 
-    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun saveReadingDialog(dialog: Dialog){
-        val pageEditText: EditText = dialog.findViewById(R.id.pageEditText)
-        val totalPage: TextView = dialog.findViewById(R.id.totalPage)
-        val startReadingDateText: TextView = dialog.findViewById(R.id.startReadingDateText)
-        val targetReadingDateText: TextView = dialog.findViewById(R.id.targetReadingDateText)
-        val okButton: Button = dialog.findViewById(R.id.OkButton)
+    private fun saveReadingDialog(dialog: BottomSheetDialog){
+        when(thisBookState){
+            "noRead" -> startReadingDialog(dialog)
+            "isReading" -> isReadingDialog(dialog)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun startReadingDialog(dialog: BottomSheetDialog) {
+        val pageEditText: EditText = dialog.findViewById(R.id.pageEditText)!!
+        val totalPage: TextView = dialog.findViewById(R.id.totalPage)!!
+        val startReadingDateText: TextView = dialog.findViewById(R.id.startReadingDateText)!!
+        val targetDateTextView: TextView = dialog.findViewById(R.id.targetDateTextView)!!
+        val targetReadingDateText: TextView = dialog.findViewById(R.id.targetReadingDateText)!!
+        val targetDateCheckBox: CheckBox = dialog.findViewById(R.id.targetDateCheckBox)!!
+        val okButton: Button = dialog.findViewById(R.id.OkButton)!!
 
         // 총 페이지 TextView
         totalPage.text = "/ ${thisBook.subInfo.itemPage}"
-
 
         val currentDate = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE)    // 현재 날짜(yyyy-MM-dd 형식)
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -295,7 +337,7 @@ class DetailActivity : AppCompatActivity() {
         startReadingDateText.setOnClickListener {
             val cal = Calendar.getInstance()    //캘린더뷰 만들기
             val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                startDate = dateFormatter.format(Date(year-1900, month, dayOfMonth))
+                startDate = dateFormatter.format(Date(year - 1900, month, dayOfMonth))
                 startReadingDateText.text = startDate
             }
             DatePickerDialog(
@@ -311,7 +353,7 @@ class DetailActivity : AppCompatActivity() {
         targetReadingDateText.setOnClickListener {
             val cal = Calendar.getInstance()    //캘린더뷰 만들기
             val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                targetDate = dateFormatter.format(Date(year-1900, month, dayOfMonth))
+                targetDate = dateFormatter.format(Date(year - 1900, month, dayOfMonth))
                 targetReadingDateText.text = targetDate
             }
             DatePickerDialog(
@@ -321,47 +363,269 @@ class DetailActivity : AppCompatActivity() {
             ).show()
         }
 
+        // 목료 완독 날짜 CheckBox
+        var targetChecked = true
+        targetDateCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            when(isChecked){
+                true -> {
+                    targetDateTextView.isEnabled = true
+                    targetReadingDateText.isEnabled = true
+                    targetDateTextView.setTextColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.black
+                        )
+                    )
+                    targetReadingDateText.setTextColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.black
+                        )
+                    )
+                    targetChecked = true
+                }
+                false -> {
+                    targetDateTextView.isEnabled = false
+                    targetReadingDateText.isEnabled = false
+                    targetDateTextView.setTextColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.textPrimaryColor
+                        )
+                    )
+                    targetReadingDateText.setTextColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.textPrimaryColor
+                        )
+                    )
+                    targetChecked = false
+                }
+            }
+        }
+
 
         okButton.setOnClickListener {
-            val startDateToInt = startDate.replace("-","").toInt()
-            val targetDateToInt = targetDate.replace("-","").toInt()
-            if(startDateToInt > targetDateToInt){
-                Toast.makeText(this, "목표 완독 날짜를 다시 설정해주세요.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            if(targetChecked){
+                val startDateToInt = startDate.replace("-", "").toInt()
+                val targetDateToInt = targetDate.replace("-", "").toInt()
+                if(startDateToInt > targetDateToInt){
+                    Toast.makeText(this, "목표 완독 날짜를 다시 설정해주세요.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
-            if(pageEditText.length() == 0){
-                Toast.makeText(this, "현재 페이지를 설정해주세요.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }else if (pageEditText.text.toString().toInt() > thisBook.subInfo.itemPage.toInt()){
-                Toast.makeText(this, "현재 페이지를 다시 설정해주세요.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+                if(pageEditText.length() == 0){
+                    Toast.makeText(this, "현재 페이지를 설정해주세요.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }else if (pageEditText.text.toString().toInt() > thisBook.subInfo.itemPage.toInt()){
+                    Toast.makeText(this, "현재 페이지를 다시 설정해주세요.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
             }
 
             Thread{
+                thisBookState = "isReading"
                 db.readingDao().insertReading(
                     Reading(
                         isbn.toLong(),
-                        "isReading",
+                        thisBookState,
                         0,
                         pageEditText.text.toString().toInt(),
+                        thisBook.subInfo.itemPage.toInt(),
+                        System.currentTimeMillis(),
                         startDate,
-                        targetDate,
+                        targetChecked,
+                        if (targetChecked) targetDate else null,
+                        null,
                         thisBook.title,
                         thisBook.author,
                         thisBook.coverSmallUrl,
                         thisBook.description
                     )
                 )
-                runOnUiThread {
-                    binding.isReadTextView.text = "읽는 중"
-                    binding.isReadTextView.setTextColor(ContextCompat.getColor(this, R.color.white))
-                    binding.isReadTextView.setBackgroundResource(R.drawable.background_radius_orange)
-                }
             }.start()
 
             Toast.makeText(this, "읽는 중인 책에 추가되었습니다.", Toast.LENGTH_SHORT).show()
             dialog.dismiss()
+
+            renewActivity()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun isReadingDialog(dialog: BottomSheetDialog) {
+        val beforeReadingButton: LinearLayout = dialog.findViewById(R.id.beforeReading)!!
+        val beforeReadingText: TextView = dialog.findViewById(R.id.beforeReadingText)!!
+        val isReadingButton: LinearLayout = dialog.findViewById(R.id.isReading)!!
+        val isReadingText: TextView = dialog.findViewById(R.id.isReadingText)!!
+        val afterReadingButton: LinearLayout = dialog.findViewById(R.id.afterReading)!!
+        val afterReadingText: TextView = dialog.findViewById(R.id.afterReadingText)!!
+        val isReadingLayout: LinearLayout = dialog.findViewById(R.id.isReadingLayout)!!
+        val pageEditText: EditText = dialog.findViewById(R.id.pageEditText)!!
+        val totalPage: TextView = dialog.findViewById(R.id.totalPage)!!
+        val startReadingDateText: TextView = dialog.findViewById(R.id.startReadingDateText)!!
+        val targetDateTextView: TextView = dialog.findViewById(R.id.targetDateTextView)!!
+        val targetReadingDateText: TextView = dialog.findViewById(R.id.targetReadingDateText)!!
+        val okButton: Button = dialog.findViewById(R.id.OkButton)!!
+
+        // Reading DB 불러오기
+        var page: Int? = null
+        var startDate: String? = null
+        var targetChecked: Boolean? = null
+        var targetDate: String? = null
+        Thread{
+            val thisBookReading = db.readingDao().getAllFromId(isbn.toLong())
+            page = thisBookReading.readingPage
+            startDate = thisBookReading.startDate
+            targetChecked = thisBookReading.targetChecked
+            targetDate = thisBookReading.targetDate
+            runOnUiThread {
+                pageEditText.setText(page.toString())
+                startReadingDateText.text = startDate
+                if(targetChecked == true)
+                    targetReadingDateText.text = targetDate
+                else {
+                    targetReadingDateText.isVisible = false
+                    targetDateTextView.isVisible = false
+                }
+
+            }
+
+        }.start()
+
+        // state 선택
+        var stateSelected = thisBookState
+        beforeReadingButton.setOnClickListener {
+            stateSelected = "noRead"
+            // 선택창 UI Setting
+            beforeReadingButton.setBackgroundResource(R.drawable.background_radius_20_stroke_orange)
+            beforeReadingText.setTextColor(ContextCompat.getColor(this, R.color.orange))
+            isReadingButton.setBackgroundResource(R.drawable.background_radius_20_stroke_gray)
+            isReadingText.setTextColor(ContextCompat.getColor(this, R.color.textPrimaryColor))
+            afterReadingButton.setBackgroundResource(R.drawable.background_radius_20_stroke_gray)
+            afterReadingText.setTextColor(ContextCompat.getColor(this, R.color.textPrimaryColor))
+            // 나머지 View
+            isReadingLayout.isVisible = false
+        }
+        isReadingButton.setOnClickListener {
+            stateSelected = "isReading"
+            // 선택창 UI Setting
+            beforeReadingButton.setBackgroundResource(R.drawable.background_radius_20_stroke_gray)
+            beforeReadingText.setTextColor(ContextCompat.getColor(this, R.color.textPrimaryColor))
+            isReadingButton.setBackgroundResource(R.drawable.background_radius_20_stroke_orange)
+            isReadingText.setTextColor(ContextCompat.getColor(this, R.color.orange))
+            afterReadingButton.setBackgroundResource(R.drawable.background_radius_20_stroke_gray)
+            afterReadingText.setTextColor(ContextCompat.getColor(this, R.color.textPrimaryColor))
+            // 나머지 View
+            isReadingLayout.isVisible = true
+        }
+        afterReadingButton.setOnClickListener {
+            stateSelected = "finishReading"
+            // 선택창 UI Setting
+            beforeReadingButton.setBackgroundResource(R.drawable.background_radius_20_stroke_gray)
+            beforeReadingText.setTextColor(ContextCompat.getColor(this, R.color.textPrimaryColor))
+            isReadingButton.setBackgroundResource(R.drawable.background_radius_20_stroke_gray)
+            isReadingText.setTextColor(ContextCompat.getColor(this, R.color.textPrimaryColor))
+            afterReadingButton.setBackgroundResource(R.drawable.background_radius_20_stroke_orange)
+            afterReadingText.setTextColor(ContextCompat.getColor(this, R.color.orange))
+            // 나머지 View
+            isReadingLayout.isVisible = false
+        }
+
+        // 페이지
+        totalPage.text = "/ ${thisBook.subInfo.itemPage}"
+
+        val currentDate = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE)    // 현재 날짜(yyyy-MM-dd 형식)
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        // 독서 시작 날짜
+        startReadingDateText.setOnClickListener {
+            val cal = Calendar.getInstance()    //캘린더뷰 만들기
+            val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                startDate = dateFormatter.format(Date(year - 1900, month, dayOfMonth))
+                startReadingDateText.text = startDate
+            }
+            DatePickerDialog(
+                this, dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(
+                    Calendar.DAY_OF_MONTH
+                )
+            ).show()
+        }
+
+        // 목표 완독 날짜
+        targetReadingDateText.setOnClickListener {
+            val cal = Calendar.getInstance()    //캘린더뷰 만들기
+            val dateSetListener =
+                DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                    targetDate = dateFormatter.format(Date(year - 1900, month, dayOfMonth))
+                    targetReadingDateText.text = targetDate
+                }
+            DatePickerDialog(
+                this, dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(
+                    Calendar.DAY_OF_MONTH
+                )
+            ).show()
+        }
+
+        // 확인 버튼
+        okButton.setOnClickListener {
+            Log.d(TAG, "state : $stateSelected")
+            when(stateSelected){
+                "noRead" -> {
+                    Thread {
+                        db.readingDao().delete(isbn.toLong())
+                    }.start()
+                    Toast.makeText(this, "읽는 책 목록에서 삭제했습니다.", Toast.LENGTH_SHORT).show()
+
+                }
+                "isReading" -> {
+                    if (targetChecked == true) {
+                        var startDateToInt = startDate?.replace("-", "")?.toInt()
+                        var targetDateToInt = targetDate?.replace("-", "")?.toInt()
+                        if (startDateToInt!! > targetDateToInt!!) {
+                            Toast.makeText(this, "목표 완독 날짜를 다시 설정해주세요.", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+
+                        if (pageEditText.length() == 0) {
+                            Toast.makeText(this, "현재 페이지를 설정해주세요.", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        } else if (pageEditText.text.toString()
+                                .toInt() > thisBook.subInfo.itemPage.toInt()
+                        ) {
+                            Toast.makeText(this, "현재 페이지를 다시 설정해주세요.", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+                    }
+                    Log.d(TAG, "현재 페이지 : ${pageEditText.text.toString().toInt()}")
+                    Thread {
+                        db.readingDao().updateReading(
+                            isbn.toLong(),
+                            pageEditText.text.toString().toInt(),
+                            startDate,
+                            targetDate
+                        )
+                    }.start()
+                    Toast.makeText(this, "수정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+                "finishReading" -> {
+                    Thread {
+                        db.readingDao().updateReadingState(
+                            isbn.toLong(),
+                            stateSelected,
+                            System.currentTimeMillis()
+                        )
+                    }.start()
+                    Toast.makeText(this, "완독한 책 목록에 추가하였습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            renewActivity()
+
+
+            dialog.dismiss()
+
+
         }
     }
 
@@ -369,6 +633,15 @@ class DetailActivity : AppCompatActivity() {
         val intent = Intent(this, TimerActivity::class.java)
         intent.putExtra("thisBookIsbn", isbn)
         startActivity(intent)
+    }
+
+    fun renewActivity(){
+        finish() //인텐트 종료
+        overridePendingTransition(0, 0) //인텐트 효과 없애기
+        val intent = intent //인텐트
+        intent.putExtra("selectedBookISBN", isbn)
+        startActivity(intent) //액티비티 열기
+        overridePendingTransition(0, 0) //인텐트 효과 없애기
     }
 
 

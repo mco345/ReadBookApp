@@ -8,8 +8,11 @@ import com.example.bookreviewapp.model.room.Reading
 
 @Dao
 interface ReadingDao {
-    @Query("SELECT * FROM reading ORDER BY startDate DESC")
-    fun getAll(): List<Reading>
+    @Query("SELECT * FROM reading WHERE state = :state ORDER BY startTime DESC")
+    fun getAll(state: String): List<Reading>
+
+    @Query("SELECT * FROM reading WHERE id == :id")
+    fun getAllFromId(id: Long): Reading
 
     @Query("SELECT state FROM reading WHERE id == :id")
     fun getState(id: Long): String
@@ -17,8 +20,11 @@ interface ReadingDao {
     @Insert
     fun insertReading(reading: Reading)
 
-    @Query("UPDATE reading SET state = :state WHERE id == :id")
-    fun updateReading(id: Long, state: String)
+    @Query("UPDATE reading SET state = :state, finishTime = :finishTime WHERE id == :id")
+    fun updateReadingState(id: Long, state: String, finishTime: Long)
+
+    @Query("UPDATE reading SET readingPage = :readingPage, startDate = :startDate, targetDate = :targetDate WHERE id == :id")
+    fun updateReading(id: Long, readingPage: Int?, startDate: String?, targetDate: String?)
 
     @Query("DELETE FROM reading WHERE id == :id")
     fun delete(id: Long)
