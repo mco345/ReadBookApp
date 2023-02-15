@@ -1,5 +1,6 @@
 package com.example.bookreviewapp
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -7,12 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.bookreviewapp.adapter.BookAdapter
 import com.example.bookreviewapp.api.BookService
 import com.example.bookreviewapp.databinding.ActivityMainBinding
 import com.example.bookreviewapp.model.restful.BestSellerDto
+import com.example.bookreviewapp.sharedPreference.MyApplication
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,8 +26,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: BookAdapter
     private lateinit var bookService: BookService
-
     private lateinit var db: AppDatabase
+
+    private var isTimer: Boolean = false
 
     override fun onResume() {
         super.onResume()
@@ -37,8 +41,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        checkTimer()
+
         initBookRecyclerView()
-        initTransparentStatusBar()
 
         // 툴바 사용 설정
         setSupportActionBar(binding.toolbar)
@@ -61,6 +66,47 @@ class MainActivity : AppCompatActivity() {
         setData()
 
     }
+
+    private fun checkTimer() {
+        Log.d(TAG, "time - "+MyApplication.prefs.getLong("isTimerTime", 0))
+        isTimer = MyApplication.prefs.getBoolean("isTimer", false)
+        if(isTimer){
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("알림")
+                .setMessage("저장되지 않은 타이머가 있습니다. 진행 중이던 타이머로 이동하시겠습니까?")
+                .setPositiveButton("네",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        val intent = Intent(this, TimerActivity::class.java)
+                        val isTimerISBN = MyApplication.prefs.getString("isTimerISBN", "no isbn")
+                        intent.putExtra("selectedBookISBN", isTimerISBN)
+                        startActivity(intent)
+                    })
+                .setNegativeButton("아니오",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        MyApplication.prefs.setBoolean("isTimer", false)
+                        MyApplication.prefs.setString("isTimerISBN", "no isbn")
+                        MyApplication.prefs.setLong("isTimerTime", 0)
+                    })
+            // 다이얼로그를 띄워주기
+            builder.show()
+        }
+    }
+
+
+    private fun initBookRecyclerView(){
+        adapter = BookAdapter(itemClickedListener = {
+            val intent = Intent(this, DetailActivity::class.java)
+            Log.d(TAG, "isbn : ${it.isbn13}")
+            intent.putExtra("selectedBookISBN", if(it.isbn13 != "") it.isbn13 else it.isbn10)
+            startActivity(intent)
+        })
+
+        // 베스트셀러
+        binding.bestSellerRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.bestSellerRecyclerView.adapter = adapter
+
+    }
+
 
     private fun setData(){
 
@@ -89,38 +135,6 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
-    private fun initBookRecyclerView(){
-        adapter = BookAdapter(itemClickedListener = {
-            val intent = Intent(this, DetailActivity::class.java)
-            Log.d(TAG, "isbn : ${it.isbn13}")
-            intent.putExtra("selectedBookISBN", if(it.isbn13 != "") it.isbn13 else it.isbn10)
-            startActivity(intent)
-        })
-
-        // 베스트셀러
-        binding.bestSellerRecyclerView.layoutManager = LinearLayoutManager(this)
-        binding.bestSellerRecyclerView.adapter = adapter
-
-    }
-
-    private fun initTransparentStatusBar(){
-        if(Build.VERSION.SDK_INT >= 19) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            if(Build.VERSION.SDK_INT < 21) {
-                setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
-            } else {
-                setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-                window.statusBarColor = Color.TRANSPARENT
-            }
-        }
-    }
-
-    private fun setWindowFlag(bits: Int, on: Boolean) {
-        val winAttr = window.attributes
-        winAttr.flags = if(on) winAttr.flags or bits else winAttr.flags and bits.inv()
-        window.attributes = winAttr
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.top_nav_menu, menu)
         return true
@@ -128,10 +142,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.search -> {
-                val intent = Intent(this, SearchActivity::class.java)
-                startActivity(intent)
-            }
             R.id.myPage -> {
                 val intent = Intent(this, MyPageActivity::class.java)
                 startActivity(intent)
@@ -142,6 +152,11 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
+    }
+
+    fun search(view: View) {
+        val intent = Intent(this, SearchActivity::class.java)
+        startActivity(intent)
     }
 
 }

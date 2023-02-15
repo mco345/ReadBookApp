@@ -28,7 +28,7 @@ class MemoActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // getIntent
-        isbn = intent.getStringExtra("thisBookIsbn").toString()
+        isbn = intent.getStringExtra("selectedBookISBN").toString()
 
         // Local DB(History) 생성
         db = Room.databaseBuilder(
@@ -40,6 +40,7 @@ class MemoActivity : AppCompatActivity() {
         Log.d(TAG, "이 책의 isbn : $isbn")
 
         initBookRecyclerView()
+        initToolbarNavigation()
 
         loadReview(isbn)
 
@@ -48,6 +49,7 @@ class MemoActivity : AppCompatActivity() {
     }
 
     private fun loadReview(isbn: String) {
+        Log.d(TAG, "isbn - $isbn")
         Thread{
             reviewList = db.reviewDao().getReview(isbn.toLong())
             adapter.submitList(reviewList)
@@ -63,7 +65,7 @@ class MemoActivity : AppCompatActivity() {
     private fun initBookRecyclerView(){
         adapter = ReviewAdapter(itemClickedListener = {
             val intent = Intent(this, WriteMemoActivity::class.java)
-            intent.putExtra("thisBookIsbn", it.id.toString())
+            intent.putExtra("selectedBookISBN", it.id.toString())
             intent.putExtra("isRevise", true)
             intent.putExtra("page", it.page)
             intent.putExtra("currentDate", it.currentDate)
@@ -80,9 +82,14 @@ class MemoActivity : AppCompatActivity() {
     // onClick
     fun addMemo(view: View) {
         val intent = Intent(this, WriteMemoActivity::class.java)
-        intent.putExtra("thisBookIsbn", isbn)
+        intent.putExtra("selectedBookISBN", isbn)
         startActivity(intent)
+    }
 
+    private fun initToolbarNavigation() {
+        binding.toolbar.setNavigationOnClickListener {
+            finish()
+        }
     }
 
     companion object{

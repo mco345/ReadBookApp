@@ -26,8 +26,6 @@ RecyclerView.Adapter.NotifiyDataSetChanged()와 같은 명령어를 사용하지
 class BookAdapter(val itemClickedListener: (Book) -> Unit): ListAdapter<Book, BookAdapter.BookItemViewHolder>(diffUtil) {
 
     inner class BookItemViewHolder(private val binding: ItemBookBinding): RecyclerView.ViewHolder(binding.root){
-        lateinit var state: String
-        var isLike: Boolean = false
 
         fun bind(bookModel: Book){
             // 상태, 찜
@@ -38,19 +36,22 @@ class BookAdapter(val itemClickedListener: (Book) -> Unit): ListAdapter<Book, Bo
             ).build()
 
             Thread{
-                state = db.readingDao().getState(bookModel.isbn13.toLong()).orEmpty()
+                val isbn = bookModel.isbn13
+                val state = db.readingDao().getState(if (isbn.isEmpty()) 0 else isbn.toLong()).orEmpty()
                 Log.d(TAG, "state : $state")
 
-                isLike = db.likeDao().getIsLike(bookModel.isbn13.toLong()) ?: false
+                val isLike = db.likeDao().getIsLike(if (isbn.isEmpty()) 0 else isbn.toLong()) ?: false
                 Log.d(TAG, "isLike : $isLike")
 
                 binding.root.post {
                     when(state){
                         "isReading" -> {
+                            Log.d(TAG, "isReading id : ${bookModel.isbn13}")
                             binding.stateImageView.isVisible = true
                             binding.stateImageView.setImageResource(R.drawable.shape_oval_orange)
                         }
                         "finishReading" -> {
+                            Log.d(TAG, "finishReading id : ${bookModel.isbn13}")
                             binding.stateImageView.isVisible = true
                             binding.stateImageView.setImageResource(R.drawable.shape_oval_violet)
                         }
@@ -70,10 +71,10 @@ class BookAdapter(val itemClickedListener: (Book) -> Unit): ListAdapter<Book, Bo
             binding.titleTextView.text = bookModel.title
             // 설명
             binding.descriptionTextView.text = bookModel.description
-                                                            .replace("&lt;", "<")
-                                                            .replace("&gt;", ">")
-                                                            .replace("&amp;", "&")
-                                                            .replace("&quot;", "\"")
+                .replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&amp;", "&")
+                .replace("&quot;", "\"")
             // 표지 사진
             Glide
                 .with(binding.coverImageView.context)

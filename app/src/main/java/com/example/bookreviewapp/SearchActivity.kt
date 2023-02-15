@@ -4,13 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -47,6 +47,7 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        autoFocus()
         initBookRecyclerView()
         initHistoryRecyclerView()
         initSearchEditText()
@@ -63,6 +64,14 @@ class SearchActivity : AppCompatActivity() {
         showHistoryView()
     }
 
+    private fun autoFocus() {
+        binding.searchEditText.requestFocus()
+
+        //키보드 보이게 하는 부분
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    }
+
     private fun retrofitCreate(){
         val retrofit = Retrofit.Builder()
             .baseUrl(getString(R.string.BaseUrl))
@@ -75,7 +84,7 @@ class SearchActivity : AppCompatActivity() {
     private fun initBookRecyclerView(){
         adapter = BookAdapter(itemClickedListener = {
             val intent = Intent(this, DetailActivity::class.java)
-            intent.putExtra("selectedBookISBN", if(it.isbn13 != "") it.isbn13 else it.isbn10)
+            intent.putExtra("selectedBookISBN", if (it.isbn13 != "") it.isbn13 else it.isbn10)
             startActivity(intent)
         })
 
@@ -86,7 +95,7 @@ class SearchActivity : AppCompatActivity() {
 
 
     private fun initHistoryRecyclerView(){
-        historyAdapter = HistoryAdapter (
+        historyAdapter = HistoryAdapter(
             historyDeleteClickedListener = {
                 deleteSearchKeyword(it)
             },
@@ -213,10 +222,10 @@ class SearchActivity : AppCompatActivity() {
     // RecyclerView 최하단 스크롤 감지
     @RequiresApi(Build.VERSION_CODES.M)
     private fun isBottom(){
-        binding.searchRecyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+        binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if(!binding.searchRecyclerView.canScrollVertically(1)){
+                if (!binding.searchRecyclerView.canScrollVertically(1)) {
                     // 10개의 데이터 추가로 load
                     getMoreData()
                 }
@@ -230,7 +239,7 @@ class SearchActivity : AppCompatActivity() {
     private fun getMoreData(){
         currentPage++   //  시작 페이지 추가
         bookService.getBooksByName(getString(R.string.APIKey), searchKeyword, currentPage)
-            .enqueue(object: Callback<SearchBookDto>{
+            .enqueue(object : Callback<SearchBookDto> {
                 override fun onResponse(
                     call: Call<SearchBookDto>,
                     response: Response<SearchBookDto>
@@ -259,14 +268,16 @@ class SearchActivity : AppCompatActivity() {
             val keywords = db.historyDao().getAll().reversed()
             // 임의의 Thread에서 UI에 접근할 때
             runOnUiThread{
-                binding.historyRecyclerView.isVisible = true
+                binding.historyTextView.isVisible = keywords.isNotEmpty()   // 검색 기록이 있으면 '최근검색' TextView visible
+
+                binding.historyScrollView.isVisible = true
                 historyAdapter.submitList(keywords)
             }
         }.start()
     }
 
     private fun hideHistoryView(){
-        binding.historyRecyclerView.isVisible = false
+        binding.historyScrollView.isVisible = false
     }
 
     private fun saveSearchKeyword(keyword: String) {
@@ -279,8 +290,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        // 검색할 때 뒤로가기 누르면 historyRecyclerView만 사라짐
-        if(isTrySearch && binding.historyRecyclerView.isVisible){
+        // 검색할 때 뒤로가기 누르면 historyScrollView 사라짐
+        if(isTrySearch && binding.historyScrollView.isVisible){
             binding.searchEditText.clearFocus()
             hideHistoryView()
         }

@@ -32,9 +32,9 @@ class WriteMemoActivity : AppCompatActivity() {
         binding = ActivityWriteMemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        isbn = intent.getStringExtra("thisBookIsbn").toString()
+        isbn = intent.getStringExtra("selectedBookISBN").toString()
         isRevise = intent.getBooleanExtra("isRevise", false)
-        if(isRevise){
+        if (isRevise) {
             val page = intent.getStringExtra("page")
             val review = intent.getStringExtra("review")
             currentDate = intent.getLongExtra("currentDate", 0)
@@ -51,7 +51,10 @@ class WriteMemoActivity : AppCompatActivity() {
             "BookSearchDB"
         ).build()
 
+        initToolbarNavigation()
+
     }
+
 
     // 수정 시에만
     private fun setUI(page: String?, review: String?) {
@@ -63,23 +66,23 @@ class WriteMemoActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun saveMemo(view: View) {
-        if(binding.reviewEditText.text.isEmpty() || binding.pageEditText.text.isEmpty()){
+        if (binding.reviewEditText.text.isEmpty() || binding.pageEditText.text.isEmpty()) {
             Toast.makeText(this, "페이지 번호 또는 메모를 입력하세요.", Toast.LENGTH_SHORT).show()
             return
         }
         Thread {
             db.reviewDao().saveReview(
                 Review(
-                    if(!isRevise) System.currentTimeMillis() else currentDate,
+                    if (!isRevise) System.currentTimeMillis() else currentDate,
                     isbn.toLong(),
                     binding.reviewEditText.text.toString(),
                     binding.pageEditText.text.toString(),
 
-                )
+                    )
             )
 
             val intent = Intent(this, MemoActivity::class.java)
-            intent.putExtra("thisBookIsbn", isbn)
+            intent.putExtra("selectedBookISBN", isbn)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
         }.start()
@@ -88,14 +91,15 @@ class WriteMemoActivity : AppCompatActivity() {
     fun deleteMemo(view: View) {
         // 다이얼로그를 생성하기 위해 Builder 클래스 생성자를 이용해 줍니다.
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("정말 삭제하시겠습니까?")
+        builder.setTitle("삭제?")
+            .setMessage("정말 삭제하시겠습니까?")
             .setPositiveButton("네",
                 DialogInterface.OnClickListener { dialog, id ->
-                    Thread{
+                    Thread {
                         db.reviewDao().deleteReview(currentDate)
 
                         val intent = Intent(this, MemoActivity::class.java)
-                        intent.putExtra("thisBookIsbn", isbn)
+                        intent.putExtra("selectedBookISBN", isbn)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         startActivity(intent)
                     }.start()
@@ -108,7 +112,13 @@ class WriteMemoActivity : AppCompatActivity() {
 
     }
 
-    companion object{
+    private fun initToolbarNavigation() {
+        binding.toolbar.setNavigationOnClickListener {
+            finish()
+        }
+    }
+
+    companion object {
         private const val TAG = "WriteMemoActivity"
     }
 

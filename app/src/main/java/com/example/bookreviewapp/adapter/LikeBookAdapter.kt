@@ -19,7 +19,6 @@ import com.example.bookreviewapp.model.room.Like
 
 class LikeBookAdapter(val itemClickedListener: (Like) -> Unit) :
     ListAdapter<Like, LikeBookAdapter.LikeBookViewHolder>(diffUtil) {
-    lateinit var state: String
 
     inner class LikeBookViewHolder(private val binding: ItemBookBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -32,15 +31,18 @@ class LikeBookAdapter(val itemClickedListener: (Like) -> Unit) :
             ).build()
 
             Thread{
-                state = db.readingDao().getState(likeModel.id!!.toLong()).orEmpty()
-                Log.d(TAG, "state : $state")
+                val state = db.readingDao().getState(likeModel.id!!.toLong()).orEmpty()
+                Log.d(TAG, "id : ${likeModel.id}, state : $state")
+
                 binding.root.post {
                     when(state){
                         "isReading" -> {
+                            Log.d(TAG, "isReading id : ${likeModel.id}")
                             binding.stateImageView.isVisible = true
                             binding.stateImageView.setImageResource(R.drawable.shape_oval_orange)
                         }
                         "finishReading" -> {
+                            Log.d(TAG, "finishReading id : ${likeModel.id}")
                             binding.stateImageView.isVisible = true
                             binding.stateImageView.setImageResource(R.drawable.shape_oval_violet)
                         }
@@ -52,6 +54,10 @@ class LikeBookAdapter(val itemClickedListener: (Like) -> Unit) :
             binding.titleTextView.text = likeModel.title
             // 설명
             binding.descriptionTextView.text = likeModel.description
+                .replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&amp;", "&")
+                .replace("&quot;", "\"")
             // 표지 사진
             Glide
                 .with(binding.coverImageView.context)

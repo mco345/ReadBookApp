@@ -6,22 +6,126 @@
     android:layout_height="match_parent"
     tools:context=".MyPageActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/topText"
-        android:text="나의 책방"
-        android:textSize="24sp"
-        android:layout_margin="15dp"/>
+        style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
+        app:navigationIcon="@drawable/ic_back"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="나의 책방"
+            android:layout_gravity="left"
+            android:textSize="22sp"
+            android:layout_margin="15dp"/>
+    </com.google.android.material.appbar.MaterialToolbar>
+
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:id="@+id/booksNumberLayout"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/background_radius_20_stroke_gray"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_margin="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="읽는 중인 책"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMaxTextSize = "16sp"
+                tools:targetApi="o" />
+
+            <TextView
+                android:id="@+id/isReadingBookNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="25dp"
+                android:gravity="center"
+                tools:text="24" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/background_radius_20_stroke_gray"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_margin="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="읽은 책"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/finishReadingBooksNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="25dp"
+                android:gravity="center"
+                tools:text="24" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/background_radius_20_stroke_gray"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_margin="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="찜한 책"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/likeBooksNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="25dp"
+                android:gravity="center"
+                tools:text="24" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topText"
+        app:layout_constraintTop_toBottomOf="@id/booksNumberLayout"
         android:id="@+id/tabLayout"
         app:tabIndicatorGravity="top"
         app:tabTextColor="@color/black"

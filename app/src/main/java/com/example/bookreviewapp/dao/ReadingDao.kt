@@ -23,6 +23,12 @@ interface ReadingDao {
     @Query("UPDATE reading SET state = :state, finishTime = :finishTime WHERE id == :id")
     fun updateReadingState(id: Long, state: String, finishTime: Long)
 
+    @Query("UPDATE reading SET readingPage = :readingPage WHERE id == :id")
+    fun updatePage(id: Long, readingPage: Int)
+
+    @Query("UPDATE reading SET readingTime = :readingTIme WHERE id == :id")
+    fun updateTimer(id: Long, readingTIme: Long)
+
     @Query("UPDATE reading SET readingPage = :readingPage, startDate = :startDate, targetDate = :targetDate WHERE id == :id")
     fun updateReading(id: Long, readingPage: Int?, startDate: String?, targetDate: String?)
 

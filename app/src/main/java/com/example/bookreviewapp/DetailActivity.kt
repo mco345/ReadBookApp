@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.view.Window
@@ -48,9 +47,18 @@ class DetailActivity : AppCompatActivity() {
 
     private lateinit var thisBook: Book
     private lateinit var isbn: String
+    private lateinit var realIsbn: String   // replace 하기 전 임시로 저장한 진짜 isbn
 
     var thisBookState: String = "noRead"
     var isAllFabsVisible: Boolean = false
+    var isClickTimer: Boolean = false
+
+    override fun onResume() {
+        super.onResume()
+
+        setUI(realIsbn)
+        setIsRead()
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +67,10 @@ class DetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         isbn = intent.getStringExtra("selectedBookISBN").toString()
+        realIsbn = isbn
+        Log.d(TAG, "isbn : $isbn")
+        isbn = isbn.replace("[a-zA-Z]".toRegex(), "")
+        Log.d(TAG, "after replace isbn : $isbn")
 
         // Local DB(History) 생성
         db = Room.databaseBuilder(
@@ -68,7 +80,7 @@ class DetailActivity : AppCompatActivity() {
         ).build()
 
         retrofitCreate()
-        setUI(isbn!!)
+        setUI(realIsbn)
         setIsRead()
         setFloatingActionButton()
 
@@ -104,32 +116,39 @@ class DetailActivity : AppCompatActivity() {
 
         binding.extendedFAB.setOnClickListener {
             if(!isAllFabsVisible){
-                binding.addMemoFAB.show()
-                binding.addMemoText.isVisible = true
-                binding.startReadingFAB.show()
-                binding.startReadingText.isVisible = true
-
-                binding.extendedFAB.extend()
-                binding.extendedFAB.setIconResource(R.drawable.ic_clear)
-
-                isAllFabsVisible = true
+                extendFAB()
             }else{
-                binding.addMemoFAB.hide()
-                binding.addMemoText.isVisible = false
-                binding.startReadingFAB.hide()
-                binding.startReadingText.isVisible = false
-
-                binding.extendedFAB.shrink()
-                binding.extendedFAB.setIconResource(R.drawable.ic_plus)
-
-                isAllFabsVisible = false
+                shrinkFAB()
             }
         }
+    }
 
+    private fun shrinkFAB(){
+        binding.addMemoFAB.hide()
+        binding.addMemoText.isVisible = false
+        binding.startReadingFAB.hide()
+        binding.startReadingText.isVisible = false
 
+        binding.extendedFAB.shrink()
+        binding.extendedFAB.setIconResource(R.drawable.ic_plus)
+
+        isAllFabsVisible = false
+    }
+
+    private fun extendFAB(){
+        binding.addMemoFAB.show()
+        binding.addMemoText.isVisible = true
+        binding.startReadingFAB.show()
+        binding.startReadingText.isVisible = true
+
+        binding.extendedFAB.extend()
+        binding.extendedFAB.setIconResource(R.drawable.ic_clear)
+
+        isAllFabsVisible = true
     }
 
     private fun setUI(isbn: String) {
+        Log.d(TAG, "setUI - isbn : $isbn")
         // getData
         bookService.getSelectedBook(getString(R.string.APIKey), isbn)
             .enqueue(object : Callback<SelectedBookDto> {
@@ -144,10 +163,10 @@ class DetailActivity : AppCompatActivity() {
                     binding.descriptionTextView.text =
                         if (item?.description != "")
                             item?.description.orEmpty()
-                            .replace("&lt;", "<")
-                            .replace("&gt;", ">")
-                            .replace("&amp;", "&")
-                            .replace("&quot;", "\"")
+                                .replace("&lt;", "<")
+                                .replace("&gt;", ">")
+                                .replace("&amp;", "&")
+                                .replace("&quot;", "\"")
                         else "x"
                     binding.publisherTextView.text = item?.publisher.orEmpty()
                     binding.ISBNTextView.text =
@@ -283,31 +302,34 @@ class DetailActivity : AppCompatActivity() {
     }
 
     fun addMemo(view: View) {
+        shrinkFAB()
+
         val intent = Intent(this, MemoActivity::class.java)
-        intent.putExtra("thisBookIsbn", isbn)
+        intent.putExtra("selectedBookISBN", isbn)
         startActivity(intent)
 
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun startReading(view: View) {
-        val startReadingDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
 
-        initReadingDialog(startReadingDialog)
-        saveReadingDialog(startReadingDialog)
-
+        initReadingDialog()
     }
 
-    private fun initReadingDialog(dialog: BottomSheetDialog){
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initReadingDialog(){
+        val startReadingDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        startReadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         when(thisBookState){
-            "noRead" -> dialog.setContentView(R.layout.dialog_start_reading)
-            "isReading" -> dialog.setContentView(R.layout.dialog_reading)
-            "finishReading" -> dialog.setContentView(R.layout.dialog_finish_reading)
+            "noRead" -> startReadingDialog.setContentView(R.layout.dialog_start_reading)
+            "isReading" -> startReadingDialog.setContentView(R.layout.dialog_reading)
+            "finishReading" -> startReadingDialog.setContentView(R.layout.dialog_finish_reading)
         }
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.show()
+        startReadingDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        startReadingDialog.show()
+
+        saveReadingDialog(startReadingDialog)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -328,6 +350,13 @@ class DetailActivity : AppCompatActivity() {
         val targetReadingDateText: TextView = dialog.findViewById(R.id.targetReadingDateText)!!
         val targetDateCheckBox: CheckBox = dialog.findViewById(R.id.targetDateCheckBox)!!
         val okButton: Button = dialog.findViewById(R.id.OkButton)!!
+
+        // 타이머 클릭 시
+        var timer = false
+        if(isClickTimer){
+            timer = true
+            isClickTimer = false
+        }
 
         // 총 페이지 TextView
         totalPage.text = "/ ${thisBook.subInfo.itemPage}"
@@ -452,7 +481,15 @@ class DetailActivity : AppCompatActivity() {
             Toast.makeText(this, "읽는 중인 책에 추가되었습니다.", Toast.LENGTH_SHORT).show()
             dialog.dismiss()
 
-            renewActivity()
+            if(!timer){
+                renewActivity()
+            }
+            else{
+                val intent = Intent(this, TimerActivity::class.java)
+                intent.putExtra("selectedBookISBN", isbn)
+                startActivity(intent)
+            }
+
         }
     }
 
@@ -636,6 +673,7 @@ class DetailActivity : AppCompatActivity() {
         val targetDateTextView: TextView = dialog.findViewById(R.id.targetDateTextView)!!
         val finishDateTextView: TextView = dialog.findViewById(R.id.finishDateTextView)!!
         val timerTextView: TextView = dialog.findViewById(R.id.timerTextView)!!
+        val okButton: Button = dialog.findViewById(R.id.OkButton)!!
 
         // 리셋 버튼
         resetButton.setOnClickListener {
@@ -644,7 +682,7 @@ class DetailActivity : AppCompatActivity() {
                 .setMessage("초기화하시면 독서 정보가 모두 삭제됩니다. 정말 초기화하시겠습니까?")
                 .setPositiveButton("확인",
                     DialogInterface.OnClickListener { dialog, id ->
-                        Thread{
+                        Thread {
                             db.readingDao().delete(isbn.toLong())
                         }.start()
                         renewActivity()
@@ -658,23 +696,65 @@ class DetailActivity : AppCompatActivity() {
             val thisBookReading = db.readingDao().getAllFromId(isbn.toLong())
             val startDate = thisBookReading.startDate
             val targetDate = thisBookReading.targetDate
-            val finishDate = SimpleDateFormat("yyyy-MM-dd", Locale("ko", "KR")).format(Date(thisBookReading.finishTime!!))
+            val finishDate = SimpleDateFormat("yyyy-MM-dd", Locale("ko", "KR")).format(
+                Date(
+                    thisBookReading.finishTime!!
+                )
+            )
+            val timerTime = timeToText(thisBookReading.readingTime ?: 0)
             runOnUiThread {
                 startDateTextView.text = startDate
                 targetDateTextView.text = targetDate
                 finishDateTextView.text = finishDate
+                timerTextView.text = timerTime
             }
         }.start()
 
+        okButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
     }
 
+
+    private fun timeToText(time: Long): String{
+        var hour = 0
+        var minute = 0
+        var second = 0
+
+        hour = (time / 3600).toInt()
+        minute = (time / 60 % 60).toInt()
+        second = (time % 60).toInt()
+
+        Log.d(TAG, "time : $time, hour : $hour, minute : $minute, second : $second")
+
+        return String.format("%02d:%02d:%02d", hour, minute, second)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun startTimer(view: View) {
-        val intent = Intent(this, TimerActivity::class.java)
-        intent.putExtra("thisBookIsbn", isbn)
-        startActivity(intent)
+        shrinkFAB()
+
+        when(thisBookState){
+            "noRead" -> {
+                isClickTimer = true
+
+                initReadingDialog()
+            }
+            "isReading" -> {
+                val intent = Intent(this, TimerActivity::class.java)
+                intent.putExtra("selectedBookISBN", isbn)
+                startActivity(intent)
+            }
+            "finishReading" -> {
+                Toast.makeText(this, "이미 책을 완독했습니다.", Toast.LENGTH_SHORT).show()
+                initReadingDialog()
+            }
+        }
+
     }
 
-    fun renewActivity(){
+    private fun renewActivity(){
         finish() //인텐트 종료
         overridePendingTransition(0, 0) //인텐트 효과 없애기
         val intent = intent //인텐트

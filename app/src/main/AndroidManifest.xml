@@ -11,15 +11,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BookReviewApp"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".ReadingActivity"></activity>
+        android:usesCleartextTraffic="true"
+        android:name="com.example.bookreviewapp.sharedPreference.MyApplication">
+        <activity android:name=".TimerActivity"></activity>
         <activity android:name=".WriteMemoActivity" />
         <activity android:name=".MemoActivity" />
         <activity android:name=".MyPageActivity" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".DetailActivity" />
+        <activity android:name=".MainActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
+            android:theme="@style/Theme.BookReviewApp.Splash"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

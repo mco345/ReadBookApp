@@ -15,30 +15,77 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"/>
 
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:orientation="vertical"
         android:padding="10dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:text="독서 시작하기"
-            android:textColor="@color/orange"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            >
+            <LinearLayout
+                android:id="@+id/isReading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/background_radius_20_stroke_orange"
+                android:padding="5dp"
+                android:layout_margin="5dp">
+
+                <TextView
+                    android:id="@+id/isReadingText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="읽는 중"
+                    android:textColor="@color/orange"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/afterReading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/background_radius_20_stroke_gray"
+                android:padding="5dp"
+                android:layout_margin="5dp">
+
+                <TextView
+                    android:id="@+id/afterReadingText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="완독함"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/timerTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="00:00:00"
+            android:textSize="18sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"/>
+
+        <LinearLayout
+            android:id="@+id/readingLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -56,7 +103,7 @@
                 android:paddingHorizontal="5dp"
                 android:singleLine="true"
                 android:inputType="number"
-                android:text="0" />
+                android:text="" />
 
             <TextView
                 android:id="@+id/totalPage"
@@ -65,59 +112,6 @@
                 android:layout_marginStart="5dp"
                 tools:text="/ 746" />
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center_vertical"
-            android:text="독서 시작 날짜"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/startReadingDateText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/background_gray_stroke"
-            android:gravity="right"
-            android:padding="5dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            tools:text="2023.02.09" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/targetDateCheckBox"
-                android:layout_width="35dp"
-                android:layout_height="20dp"
-                android:checked="true" />
-
-            <TextView
-                android:id="@+id/targetDateTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="목표 완독 날짜"
-                android:textColor="@color/black" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/targetReadingDateText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/background_gray_stroke"
-            android:gravity="right"
-            android:padding="5dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            tools:text="2023.02.09" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/OkButton"
@@ -132,5 +126,8 @@
             android:textStyle="bold" />
 
 
+
     </LinearLayout>
+
+
 </LinearLayout>

@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class Reading(
     @PrimaryKey val id: Long?,   // isbn13
     @ColumnInfo(name="state") val state: String?, // isReading: 읽는 중, isReadDone: 읽음
-    @ColumnInfo(name="readingTime") val readingTime: Int?,
+    @ColumnInfo(name="readingTime") val readingTime: Long?,
     @ColumnInfo(name="readingPage") val readingPage: Int?,
     @ColumnInfo(name="totalPage") val totalPage: Int?,
     @ColumnInfo(name="startTime") val startTime: Long?,
