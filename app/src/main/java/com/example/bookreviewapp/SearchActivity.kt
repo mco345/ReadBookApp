@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -307,5 +308,11 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "SearchActivity"
+    }
+
+    fun backButtonClicked(view: View) {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
+        finish()
     }
 }

@@ -167,6 +167,11 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
+    fun search(view: View) {
+        val intent = Intent(this, SearchActivity::class.java)
+        startActivity(intent)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.top_nav_menu, menu)
         return true
@@ -178,6 +183,10 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, MyPageActivity::class.java)
                 startActivity(intent)
             }
+            R.id.search -> {
+                val intent = Intent(this, SearchActivity::class.java)
+                startActivity(intent)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -186,9 +195,6 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
     }
 
-    fun search(view: View) {
-        val intent = Intent(this, SearchActivity::class.java)
-        startActivity(intent)
-    }
+
 
 }
