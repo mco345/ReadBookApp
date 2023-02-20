@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -84,7 +85,14 @@ class ReadBookFragment : Fragment() {
         Thread {
             readingList = db.readingDao().getAll("isReading").orEmpty()
             context.runOnUiThread {
-                setReadingList()
+                if(readingList.isEmpty()){
+                    binding.readBookRecyclerView.isVisible = false
+                    binding.emptyTextView.isVisible = true
+                }else{
+                    binding.readBookRecyclerView.isVisible = true
+                    binding.emptyTextView.isVisible = false
+                    setReadingList()
+                }
             }
         }.start()
     }

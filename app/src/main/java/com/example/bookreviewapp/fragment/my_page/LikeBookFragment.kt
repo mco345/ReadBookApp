@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.bookreviewapp.*
@@ -68,7 +69,14 @@ class LikeBookFragment : Fragment() {
             likeList = db.likeDao().getAllLikeList()
             Log.d(TAG, "찜 목록 : $likeList")
             context.runOnUiThread{
-                setLikeList()
+                if(likeList.isEmpty()){
+                    binding.likeBookRecyclerView.isVisible = false
+                    binding.emptyTextView.isVisible = true
+                }else{
+                    binding.likeBookRecyclerView.isVisible = true
+                    binding.emptyTextView.isVisible = false
+                    setLikeList()
+                }
             }
         }.start()
     }

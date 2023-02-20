@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -751,6 +752,11 @@ class DetailActivity : AppCompatActivity() {
                 initReadingDialog()
             }
         }
+    }
+
+    fun purchaseClicked(view: View) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(thisBook.link))
+        startActivity(intent)
 
     }
 
@@ -766,6 +772,8 @@ class DetailActivity : AppCompatActivity() {
     fun backButtonClicked(view: View) {
         finish()
     }
+
+
 
 
     companion object {

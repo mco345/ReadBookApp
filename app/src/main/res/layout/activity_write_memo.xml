@@ -4,82 +4,101 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WriteMemoActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".WriteMemoActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"
-            app:navigationIcon="@drawable/ic_back"
-            app:title="메모하기"
-            >
+            app:navigationIcon="@drawable/ic_back">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_margin="15dp"
+                android:fontFamily="@font/font19"
+                android:text="메모하기"
+                android:textSize="22sp" />
+
             <TextView
                 android:id="@+id/saveButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="저장"
                 android:layout_gravity="right"
-                android:onClick="saveMemo"
-                android:textSize="20sp"
                 android:layout_marginRight="10dp"
-                android:textStyle="bold"
-                android:textColor="@color/orange"/>
+                android:fontFamily="@font/font81"
+                android:onClick="saveMemo"
+                android:text="저장"
+                android:textColor="@color/orange"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/deleteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="삭제"
                 android:layout_gravity="right"
-                android:onClick="deleteMemo"
-                android:textSize="20sp"
                 android:layout_marginRight="15dp"
-                android:visibility="gone"
-                tools:visibility="visible"
+                android:fontFamily="@font/font81"
+                android:onClick="deleteMemo"
+                android:text="삭제"
+                android:textColor="@color/gray"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="@color/gray"/>
+                android:visibility="gone"
+                tools:visibility="visible" />
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="페이지 번호"
-        android:layout_margin="10dp"
-        android:textSize="18sp"
-        />
-    <EditText
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background_radius_gray"
-        android:padding="10dp"
-        android:singleLine="true"
-        android:hint="ex) 242"
-        android:id="@+id/pageEditText"
-        android:layout_marginHorizontal="12dp"
-        android:textSize="20sp"
-        android:inputType="number"/>
-
-    <EditText
-        android:id="@+id/reviewEditText"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/background_radius_gray"
-        android:padding="10dp"
-        android:layout_marginTop="30dp"
-        android:hint="해당 페이지에 남기고 싶은 메모를 자유롭게 작성하세요."
-        android:gravity="top"
-        android:layout_marginHorizontal="12dp"
-        android:textSize="18sp"/>
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="페이지 번호"
+            android:fontFamily="@font/font33"
+            android:textSize="16sp"/>
 
+        <EditText
+            android:id="@+id/pageEditText"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:background="@drawable/background_radius_gray"
+            android:hint="ex) 242"
+            android:inputType="number"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:fontFamily="@font/font2"
+            android:textSize="14sp"/>
+
+        <EditText
+            android:id="@+id/reviewEditText"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/background_radius_gray"
+            android:gravity="top"
+            android:hint="해당 페이지에 남기고 싶은 메모를 자유롭게 작성하세요."
+            android:fontFamily="@font/font2"
+            android:padding="10dp"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
 
 </LinearLayout>

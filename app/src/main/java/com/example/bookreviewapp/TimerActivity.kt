@@ -230,7 +230,7 @@ class TimerActivity : AppCompatActivity() {
 
         // 총 페이지
         val totalPage = thisBook.totalPage!!
-        totalPageTextView.text = totalPage.toString()
+        totalPageTextView.text = "/$totalPage"
 
         // 타이머 TextView
         timerTextView.text = timeToText(currentTime)
@@ -273,6 +273,12 @@ class TimerActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    fun addMemo(view: View) {
+        val intent = Intent(this, MemoActivity::class.java)
+        intent.putExtra("selectedBookISBN", isbn)
+        startActivity(intent)
     }
 
     override fun onBackPressed() {
@@ -318,7 +324,29 @@ class TimerActivity : AppCompatActivity() {
 
     private fun initToolbarNavigation() {
         binding.toolbar.setNavigationOnClickListener {
-            finish()
+            if(MyApplication.prefs.getBoolean("isTimer", false)){
+                val builder = AlertDialog.Builder(this)
+
+                builder.setTitle("타이머 강제 종료")
+                    .setMessage("현재 타이머를 저장하지 않고 종료하시겠습니까? 종료하시게 되면 현재 타이머 기록은 삭제되고 다시 복구할 수 없습니다.")
+                    .setPositiveButton("네",
+                        DialogInterface.OnClickListener { dialog, id ->
+                            timerTask?.cancel() // 타이머 종료
+
+                            // Preference 초기화
+                            MyApplication.prefs.setBoolean("isTimer", false)
+                            MyApplication.prefs.setString("isTimerISBN", "no isbn")
+                            MyApplication.prefs.setLong("isTimerTime", 0)
+
+                            // 종료
+                            finish()
+                        })
+                    .setNegativeButton("아니오", null)
+                // 다이얼로그를 띄워주기
+                builder.show()
+            }else{
+                finish()
+            }
         }
     }
 

@@ -34,6 +34,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/background_radius_20_stroke_gray"
                 android:padding="5dp"
+                android:gravity="center"
                 android:layout_margin="5dp">
 
                 <TextView
@@ -41,6 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="읽기 전"
+                    android:fontFamily="@font/font33"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:gravity="center"/>
@@ -53,6 +55,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/background_radius_20_stroke_orange"
                 android:padding="5dp"
+                android:gravity="center"
                 android:layout_margin="5dp">
 
                 <TextView
@@ -60,6 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="읽는 중"
+                    android:fontFamily="@font/font33"
                     android:textColor="@color/orange"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -73,16 +77,18 @@
                 android:layout_weight="1"
                 android:background="@drawable/background_radius_20_stroke_gray"
                 android:padding="5dp"
-                android:layout_margin="5dp">
+                android:layout_margin="5dp"
+                android:gravity="center">
 
                 <TextView
                     android:id="@+id/afterReadingText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="완독함"
+                    android:gravity="center"
+                    android:fontFamily="@font/font33"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:gravity="center"/>
+                    android:textStyle="bold"/>
 
             </LinearLayout>
 
@@ -106,6 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="현재 페이지"
+                    android:fontFamily="@font/font33"
                     android:textColor="@color/black" />
 
                 <EditText
@@ -115,17 +122,20 @@
                     android:layout_marginStart="10dp"
                     android:background="@drawable/background_gray_stroke"
                     android:gravity="center"
+                    android:fontFamily="@font/font2"
                     android:paddingHorizontal="5dp"
                     android:singleLine="true"
                     android:inputType="number"
-                    android:text="" />
+                    android:textSize="16sp"
+                    android:text="0" />
 
                 <TextView
                     android:id="@+id/totalPage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    tools:text="/ 746" />
+                    tools:text="/ 746"
+                    android:fontFamily="@font/font2"/>
             </LinearLayout>
 
             <TextView
@@ -134,6 +144,7 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center_vertical"
                 android:text="독서 시작 날짜"
+                android:fontFamily="@font/font33"
                 android:textColor="@color/black" />
 
             <TextView
@@ -144,8 +155,9 @@
                 android:background="@drawable/background_gray_stroke"
                 android:gravity="right"
                 android:padding="5dp"
+                android:fontFamily="@font/font2"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 tools:text="2023.02.09" />
 
             <TextView
@@ -153,6 +165,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="목표 완독 날짜"
+                android:fontFamily="@font/font33"
                 android:textColor="@color/black"/>
 
             <TextView
@@ -163,8 +176,9 @@
                 android:background="@drawable/background_gray_stroke"
                 android:gravity="right"
                 android:padding="5dp"
+                android:fontFamily="@font/font2"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 tools:text="2023.02.09" />
         </LinearLayout>
 
@@ -178,6 +192,7 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/background_radius_orange"
             android:text="확인"
+            android:fontFamily="@font/font81"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />

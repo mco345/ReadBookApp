@@ -20,8 +20,16 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"
-            app:navigationIcon="@drawable/ic_back"
-            app:title="메모 목록" />
+            app:navigationIcon="@drawable/ic_back">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_margin="15dp"
+                android:text="메모"
+                android:fontFamily="@font/font19"
+                android:textSize="22sp" />
+        </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
@@ -37,13 +45,14 @@
         <ImageView
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:src="@drawable/empty"
+            android:src="@drawable/no_result"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="18sp"
+            android:fontFamily="@font/font33"
             android:text="메모가 없습니다."/>
 
     </LinearLayout>
@@ -56,6 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appbar"
+        android:padding="10dp"
         tools:listitem="@layout/item_review"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

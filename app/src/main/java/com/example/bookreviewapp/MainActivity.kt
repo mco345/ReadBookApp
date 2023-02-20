@@ -11,7 +11,10 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.example.bookreviewapp.adapter.BookAdapter
+import com.example.bookreviewapp.adapter.ViewPagerAdapter
 import com.example.bookreviewapp.api.BookService
 import com.example.bookreviewapp.databinding.ActivityMainBinding
 import com.example.bookreviewapp.model.restful.BestSellerDto
@@ -43,6 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         checkTimer()
 
+        initViewPager()
         initBookRecyclerView()
 
         // 툴바 사용 설정
@@ -90,6 +94,34 @@ class MainActivity : AppCompatActivity() {
             // 다이얼로그를 띄워주기
             builder.show()
         }
+    }
+
+    private fun initViewPager() {
+        binding.viewPagerMain.adapter = ViewPagerAdapter(getViewPagerList())    // 어댑터 생성
+        binding.viewPagerMain.orientation = ViewPager2.ORIENTATION_HORIZONTAL   // 방향은 가로로
+        initPagerListener()
+    }
+
+    private fun getViewPagerList(): MutableList<Int> {
+        return mutableListOf(R.drawable.bestseller)
+    }
+
+    private fun initPagerListener(){
+        binding.viewPagerMain.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                Log.d(TAG, "onPageSelected - position : $position")
+            }
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+                Log.d(TAG, "onPageScrolled  - position : $position")
+            }
+        })
     }
 
 

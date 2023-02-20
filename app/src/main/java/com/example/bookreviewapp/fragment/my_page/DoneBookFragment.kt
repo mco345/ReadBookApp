@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.bookreviewapp.AppDatabase
@@ -84,7 +85,15 @@ class DoneBookFragment : Fragment() {
         Thread {
             readingList = db.readingDao().getAll("finishReading").orEmpty()
             context.runOnUiThread {
-                setReadingList()
+                if(readingList.isEmpty()){
+                    binding.doneBookRecyclerView.isVisible = false
+                    binding.emptyTextView.isVisible = true
+                }else{
+                    binding.doneBookRecyclerView.isVisible = true
+                    binding.emptyTextView.isVisible = false
+                    setReadingList()
+                }
+
             }
         }.start()
     }

@@ -52,6 +52,8 @@ class LikeBookAdapter(val itemClickedListener: (Like) -> Unit) :
             }.start()
             // 제목
             binding.titleTextView.text = likeModel.title
+            // 작가
+            binding.authorTextView.text = likeModel.author
             // 설명
             binding.descriptionTextView.text = likeModel.description
                 .replace("&lt;", "<")

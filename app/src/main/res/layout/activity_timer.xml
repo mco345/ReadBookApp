@@ -12,78 +12,87 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
-        app:navigationIcon="@drawable/ic_back"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_back">
+
         <TextView
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="저장 후 종료"
             android:layout_gravity="right"
-            android:onClick="saveTimer"
-            android:textSize="14sp"
             android:layout_marginRight="15dp"
-            android:textStyle="bold"
-            android:textColor="@color/orange"/>
+            android:fontFamily="@font/font81"
+            android:onClick="saveTimer"
+            android:text="저장 후 종료"
+            android:textColor="@color/orange"
+            android:textSize="14sp"
+            android:textStyle="bold" />
     </com.google.android.material.appbar.MaterialToolbar>
 
     <LinearLayout
         android:id="@+id/bookLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        android:orientation="horizontal"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/background_radius_20_stroke_gray"
-        >
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
         <ImageView
+            android:id="@+id/bookImage"
             android:layout_width="80dp"
             android:layout_height="120dp"
             android:layout_margin="15dp"
-            tools:src="@drawable/books"
             android:scaleType="fitXY"
 
-            android:id="@+id/bookImage"/>
+            tools:src="@drawable/books" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="15dp"
             android:orientation="vertical"
-            >
+            android:padding="15dp">
+
             <TextView
                 android:id="@+id/titleTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
                 android:ellipsize="end"
+                android:fontFamily="@font/font33"
+                android:maxLines="2"
+                android:textColor="@color/black"
                 android:textSize="14sp"
-                tools:text="책 제목"
-                android:textColor="@color/black"/>
+                tools:text="책 제목" />
+
             <TextView
                 android:id="@+id/authorTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/font32"
                 android:singleLine="true"
-                android:textSize="12sp"
-                tools:text="작가"
-                android:textColor="@color/textPrimaryColor"/>
+                android:textColor="@color/textPrimaryColor"
+                android:textSize="11sp"
+                tools:text="작가" />
+
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
+
             <TextView
                 android:id="@+id/pageTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/font112"
                 android:singleLine="true"
-                android:textSize="12sp"
-                tools:text="현재 페이지 : "
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                tools:text="현재 페이지 : " />
 
         </LinearLayout>
 
@@ -93,40 +102,41 @@
         android:id="@+id/timerTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bookLayout"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="60dp"
+        android:fontFamily="@font/font43"
+        android:text="01:22:30"
         android:textSize="62sp"
-        android:text="00:00:00"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bookLayout" />
 
     <ImageButton
         android:id="@+id/playButton"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:layout_marginTop="100dp"
+        android:background="@android:color/transparent"
+        android:onClick="timer"
         android:scaleType="fitXY"
         android:src="@drawable/play_button"
-        android:background="@android:color/transparent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timerTextView"
-        android:layout_marginTop="100dp"
-        android:onClick="timer"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timerTextView" />
 
     <TextView
         android:id="@+id/memoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:layout_margin="30dp"
+        android:fontFamily="@font/font81"
+        android:onClick="addMemo"
         android:text="메모하기"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/orange"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="30dp"
-        android:textColor="@color/orange"/>
-
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

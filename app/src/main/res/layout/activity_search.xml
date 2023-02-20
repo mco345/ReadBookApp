@@ -19,6 +19,7 @@
         android:drawablePadding="10dp"
         android:elevation="5dp"
         android:hint="제목, 작가, ISBN"
+        android:fontFamily="@font/font33"
         android:inputType="text"
         android:lines="1"
         android:paddingHorizontal="10dp"

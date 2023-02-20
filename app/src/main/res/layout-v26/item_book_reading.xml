@@ -35,8 +35,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:textColor="@color/orange"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textStyle="bold"
+            android:fontFamily="@font/font18"
             app:layout_constraintStart_toStartOf="@id/coverImageView"
             app:layout_constraintTop_toTopOf="@id/coverImageView"
             android:elevation="5dp"
@@ -50,11 +51,12 @@
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/coverImageView"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="안드로이드 마스터하기" />
+            tools:text="안드로이드 마스터하기"
+            android:fontFamily="@font/font33" />
 
         <TextView
             android:id="@+id/startDateTextView"
@@ -63,6 +65,7 @@
             android:layout_marginTop="12dp"
             android:singleLine="true"
             android:textSize="12sp"
+            android:fontFamily="@font/font112"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/titleTextView"
             app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
@@ -74,6 +77,7 @@
             android:layout_marginTop="12dp"
             android:singleLine="true"
             android:textSize="12sp"
+            android:fontFamily="@font/font112"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/titleTextView"
             app:layout_constraintTop_toBottomOf="@+id/startDateTextView" />

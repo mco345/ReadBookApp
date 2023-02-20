@@ -69,6 +69,8 @@ class BookAdapter(val itemClickedListener: (Book) -> Unit): ListAdapter<Book, Bo
 
             // 제목
             binding.titleTextView.text = bookModel.title
+            //작가
+            binding.authorTextView.text = bookModel.author
             // 설명
             binding.descriptionTextView.text = bookModel.description
                 .replace("&lt;", "<")

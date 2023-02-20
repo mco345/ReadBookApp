@@ -24,8 +24,11 @@
                 android:id="@+id/pageTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_radius_gray"
+                android:background="@drawable/background_gray_stroke_radius_16"
                 android:padding="5dp"
+                android:textSize="12sp"
+                android:textColor="@color/orange"
+                android:fontFamily="@font/font5"
                 tools:text="p.22" />
 
             <View
@@ -37,6 +40,9 @@
                 android:id="@+id/dateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:fontFamily="@font/font5"
+                android:textColor="@color/gray"
                 tools:text="22초전" />
         </LinearLayout>
 
@@ -46,8 +52,11 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:textColor="@color/black"
-            android:textSize="16sp"
-            tools:text="메모" />
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:textSize="14sp"
+            tools:text="메모"
+            android:fontFamily="@font/font2"/>
     </LinearLayout>
 
     <View

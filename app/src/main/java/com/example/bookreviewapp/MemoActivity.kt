@@ -28,7 +28,7 @@ class MemoActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // getIntent
-        isbn = intent.getStringExtra("selectedBookISBN").toString()
+        isbn = intent.getStringExtra("selectedBookISBN").orEmpty()
 
         // Local DB(History) 생성
         db = Room.databaseBuilder(
