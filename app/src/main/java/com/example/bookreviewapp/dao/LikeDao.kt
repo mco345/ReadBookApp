@@ -1,9 +1,7 @@
 package com.example.bookreviewapp.dao
 
 import androidx.room.*
-import com.example.bookreviewapp.model.restful.Book
 import com.example.bookreviewapp.model.room.Like
-import com.example.bookreviewapp.model.room.Review
 
 @Dao
 interface LikeDao {

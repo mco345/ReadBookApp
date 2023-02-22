@@ -20,8 +20,8 @@ import com.example.bookreviewapp.adapter.BookAdapter
 import com.example.bookreviewapp.adapter.HistoryAdapter
 import com.example.bookreviewapp.api.BookService
 import com.example.bookreviewapp.databinding.ActivitySearchBinding
-import com.example.bookreviewapp.model.restful.Book
-import com.example.bookreviewapp.model.restful.SearchBookDto
+import com.example.bookreviewapp.model.retrofit.Book
+import com.example.bookreviewapp.model.retrofit.SearchBookDto
 import com.example.bookreviewapp.model.room.History
 import retrofit2.Call
 import retrofit2.Callback

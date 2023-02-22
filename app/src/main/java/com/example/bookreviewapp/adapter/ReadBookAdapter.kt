@@ -10,10 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.example.bookreviewapp.databinding.ItemBookBinding
 import com.example.bookreviewapp.databinding.ItemBookReadingBinding
-import com.example.bookreviewapp.model.restful.Book
-import com.example.bookreviewapp.model.room.Like
 import com.example.bookreviewapp.model.room.Reading
 import java.text.SimpleDateFormat
 import java.util.*

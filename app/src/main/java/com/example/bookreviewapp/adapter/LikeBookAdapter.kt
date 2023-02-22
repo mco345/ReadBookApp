@@ -14,7 +14,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.bookreviewapp.AppDatabase
 import com.example.bookreviewapp.R
 import com.example.bookreviewapp.databinding.ItemBookBinding
-import com.example.bookreviewapp.model.restful.Book
 import com.example.bookreviewapp.model.room.Like
 
 class LikeBookAdapter(val itemClickedListener: (Like) -> Unit) :

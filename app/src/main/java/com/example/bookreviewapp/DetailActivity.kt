@@ -24,8 +24,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.bookreviewapp.api.BookService
 import com.example.bookreviewapp.databinding.ActivityDetailBinding
-import com.example.bookreviewapp.model.restful.Book
-import com.example.bookreviewapp.model.restful.SelectedBookDto
+import com.example.bookreviewapp.model.retrofit.Book
+import com.example.bookreviewapp.model.retrofit.SelectedBookDto
 import com.example.bookreviewapp.model.room.Like
 import com.example.bookreviewapp.model.room.Rating
 import com.example.bookreviewapp.model.room.Reading

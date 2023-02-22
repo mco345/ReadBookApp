@@ -2,7 +2,6 @@ package com.example.bookreviewapp.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.RoundedCorner
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
@@ -13,10 +12,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.bookreviewapp.AppDatabase
-import com.example.bookreviewapp.MainActivity
 import com.example.bookreviewapp.R
 import com.example.bookreviewapp.databinding.ItemBookBinding
-import com.example.bookreviewapp.model.restful.Book
+import com.example.bookreviewapp.model.retrofit.Book
 
 /*
 ListAdapter란 백그라운드 스레드에서 기존 리스트와 새로 들어온 리스트 간 차이를 계산하여 RecyclerView에 데이터를 표시하기 위한 어댑터 기본 클래스이다.

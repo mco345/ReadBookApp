@@ -1,8 +1,8 @@
 package com.example.bookreviewapp.api
 
-import com.example.bookreviewapp.model.restful.BestSellerDto
-import com.example.bookreviewapp.model.restful.SearchBookDto
-import com.example.bookreviewapp.model.restful.SelectedBookDto
+import com.example.bookreviewapp.model.retrofit.BestSellerDto
+import com.example.bookreviewapp.model.retrofit.SearchBookDto
+import com.example.bookreviewapp.model.retrofit.SelectedBookDto
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

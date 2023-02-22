@@ -1,4 +1,4 @@
-package com.example.bookreviewapp.model.restful
+package com.example.bookreviewapp.model.retrofit
 
 import com.google.gson.annotations.SerializedName
 

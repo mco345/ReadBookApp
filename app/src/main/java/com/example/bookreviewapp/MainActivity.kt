@@ -2,8 +2,6 @@ package com.example.bookreviewapp
 
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Color
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,13 +9,12 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.bookreviewapp.adapter.BookAdapter
 import com.example.bookreviewapp.adapter.ViewPagerAdapter
 import com.example.bookreviewapp.api.BookService
 import com.example.bookreviewapp.databinding.ActivityMainBinding
-import com.example.bookreviewapp.model.restful.BestSellerDto
+import com.example.bookreviewapp.model.retrofit.BestSellerDto
 import com.example.bookreviewapp.sharedPreference.MyApplication
 import retrofit2.Call
 import retrofit2.Callback
