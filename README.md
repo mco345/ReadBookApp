@@ -17,7 +17,7 @@
 - Git
 
 ## 사용 기술 및 라이브러리
-- Restful API
+- Retrofit
 - Glide
 - data binding
 - Room DB
